@@ -5,6 +5,7 @@ bower_components/
 vendor/
 .pnp/
 .pnp.js
+/env
 
 # Environment variables
 .env
