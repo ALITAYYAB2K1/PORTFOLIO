@@ -15,5 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieparser());
+import messageRouter from "./routes/message.routes.js";
+app.use("/api/v1/messages", messageRouter);
 
 export default app;

@@ -1,6 +1,7 @@
-import express from "express";
+import { Router } from "express";
+import { sendMessage } from "../controllers/message.controller";
 
-const router = express.Router();
-router;
+const router = Router();
+router.route("/send").post(sendMessage);
 
 export default router;
