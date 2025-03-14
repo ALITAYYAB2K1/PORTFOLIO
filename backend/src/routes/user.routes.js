@@ -5,6 +5,8 @@ import {
   logoutUser,
   getUser,
   updateUserProfile,
+  updatePassword,
+  getUserForPortfolio,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -19,6 +21,7 @@ router.route("/register").post(
 );
 
 router.route("/login").post(loginUser);
+router.route("/portfolio").get(getUserForPortfolio);
 //secure routes
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/me").get(verifyJWT, getUser);
@@ -30,5 +33,5 @@ router.route("/update/me").put(
   ]),
   updateUserProfile
 );
-
+router.route("/update/password").patch(verifyJWT, updatePassword);
 export default router;

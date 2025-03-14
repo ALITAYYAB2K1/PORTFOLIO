@@ -273,4 +273,45 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
 
   res.status(200).json(new ApiResponse(200, user, "Profile updated"));
 });
-export { registerUser, loginUser, logoutUser, getUser, updateUserProfile };
+
+const updatePassword = asyncHandler(async (req, res, next) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
+    throw new ApiError("Please provide all fields", 400);
+  }
+  if (newPassword !== confirmNewPassword) {
+    throw new ApiError("Passwords do not match", 400);
+  }
+  if (newPassword === currentPassword) {
+    throw new ApiError(
+      "New password cannot be the same as the current password",
+      400
+    );
+  }
+  const user = await User.findById(req.user._id).select("+password");
+  const isPasswordCorrect = await user.isPasswordCorrect(currentPassword);
+  if (!isPasswordCorrect) {
+    throw new ApiError("Invalid current password", 400);
+  }
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: true });
+  res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password updated successfully"));
+});
+
+const getUserForPortfolio = asyncHandler(async (req, res, next) => {
+  const id = "67d41e8cd83e39a8d115f164";
+  const user = await User.findById(id).select("-password -refreshToken");
+  res.status(200).json(new ApiResponse(200, user, "User details"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUser,
+  updateUserProfile,
+  updatePassword,
+  getUserForPortfolio,
+};
