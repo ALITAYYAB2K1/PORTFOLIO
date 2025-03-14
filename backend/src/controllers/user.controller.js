@@ -51,7 +51,7 @@ const register = asyncHandler(async (req, res, next) => {
     "-password -refreshToken"
   );
   if (!createdUser) {
-    throw new ApiError(500, "Something went wrong");
+    throw new ApiError(500, "user not created");
   }
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
