@@ -114,4 +114,44 @@ const registerUser = asyncHandler(async (req, res, next) => {
     );
 });
 
-export { registerUser };
+const loginUser = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    throw new ApiError("Please provide email and password", 400);
+  }
+  ///select("+password") is used to select the password field which is not selected by default
+  const user = await User.findOne({ email }).select("+password");
+  if (!user || !(await user.isPasswordCorrect(password))) {
+    throw new ApiError("Invalid credentials", 401);
+  }
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const loggedInUser = await User.findById(user._id).select(
+    "-password -refreshToken"
+  );
+  if (!loggedInUser) {
+    throw new ApiError(500, "user not found");
+  }
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in successfully"
+      )
+    );
+});
+
+export { registerUser, loginUser };
