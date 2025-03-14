@@ -105,11 +105,11 @@ const registerUser = asyncHandler(async (req, res, next) => {
       new ApiResponse(
         200,
         {
-          user: loggedInUser,
+          user: createdUser, // Changed from loggedInUser to createdUser
           accessToken,
           refreshToken,
         },
-        "User logged in"
+        "User registered successfully" // Changed message to reflect registration
       )
     );
 });
