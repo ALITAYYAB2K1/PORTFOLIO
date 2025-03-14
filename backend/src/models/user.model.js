@@ -33,25 +33,14 @@ const userSchema = new Schema(
       select: false,
     },
     avatar: {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
+      type: String,
+      required: [true, "Avatar is required"],
     },
     resume: {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
+      type: String,
+      required: [true, "Resume is required"],
     },
+
     portfolioURL: {
       type: String,
     },
