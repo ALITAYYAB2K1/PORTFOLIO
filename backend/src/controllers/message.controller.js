@@ -17,4 +17,16 @@ const getAllMessages = asyncHandler(async (req, res, next) => {
   res.status(200).json(new ApiResponse(200, data, "All messages"));
 });
 
-export { sendMessage, getAllMessages };
+const deleteMessage = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const message = await Message.findById(id);
+  if (!message) {
+    return next(new ApiError(404, "Message not found or deleted"));
+  }
+  await message.deleteOne();
+  res
+    .status(200)
+    .json(new ApiResponse(200, message, "Message deleted successfully"));
+});
+
+export { sendMessage, getAllMessages, deleteMessage };
