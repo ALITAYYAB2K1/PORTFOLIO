@@ -186,45 +186,91 @@ const getUser = asyncHandler(async (req, res, next) => {
 
 const updateUserProfile = asyncHandler(async (req, res, next) => {
   const newProfile = {
-    fullname: req.body.fullname,
-    email: req.body.email,
-    aboutMe: req.body.aboutMe,
-    phone: req.body.phone,
-    portfolioURL: req.body.portfolioURL,
-    githubURL: req.body.githubURL,
-    linkedinURL: req.body.linkedinURL,
-    facebookURL: req.body.facebookURL,
-    twitterURL: req.body.twitterURL,
+    fullname: req.body.fullname || req.user.fullname,
+    email: req.body.email || req.user.email,
+    aboutMe: req.body.aboutMe || req.user.aboutMe,
+    phone: req.body.phone || req.user.phone,
+    portfolioURL: req.body.portfolioURL || req.user.portfolioURL,
+    githubURL: req.body.githubURL || req.user.github || "",
+    linkedinURL: req.body.linkedinURL || req.user.linkedinURL || "",
+    facebookURL: req.body.facebookURL || req.user.facebookURL || "",
+    twitterURL: req.body.twitterURL || req.user.twitterURL || "",
   };
+
+  // Import v2 directly at the top of your file if not already done
+  // import { v2 as cloudinary } from "cloudinary";
+
+  // Handle avatar update
   if (req.files && req.files?.avatar) {
     const avatarLocalPath = req.files?.avatar[0].path;
     const previousAvatar = req.user.avatar;
+
     if (previousAvatar) {
-      const publicId = previousAvatar.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(publicId);
+      try {
+        // Example URL: http://res.cloudinary.com/dutan9dsu/image/upload/v1741970542/fawd7evzmeebyolhqc79.png
+        // Extract public ID from URL - this is the part after the last slash without the file extension
+        const urlParts = previousAvatar.split("/");
+        const filenameWithExt = urlParts[urlParts.length - 1];
+        const publicId = filenameWithExt.split(".")[0];
+
+        console.log(`Attempting to delete avatar with public ID: ${publicId}`);
+
+        // Use the correct method from the Cloudinary API
+        const result = await cloudinary.uploader.destroy(publicId);
+        console.log("Cloudinary delete result:", result);
+      } catch (error) {
+        console.error("Error deleting from Cloudinary:", error);
+      }
     }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
     newProfile.avatar = avatar?.url || "";
   }
+
+  // Handle resume update
   if (req.files && req.files?.resume) {
     const resumeLocalPath = req.files?.resume[0].path;
     const previousResume = req.user.resume;
+
     if (previousResume) {
-      const publicId = previousResume.split("/").pop().split(".")[0];
-      await cloudinary.uploader.destroy(publicId);
+      try {
+        const urlParts = previousResume.split("/");
+        const filenameWithExt = urlParts[urlParts.length - 1];
+        const publicId = filenameWithExt.split(".")[0];
+
+        console.log(`Attempting to delete resume with public ID: ${publicId}`);
+
+        // For resume - check if it's an image or a document type
+        const fileExtension = filenameWithExt.split(".").pop().toLowerCase();
+        const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(
+          fileExtension
+        );
+        const resourceType = isImage ? "image" : "raw";
+
+        // Use destroy for single file deletion
+        const result = await cloudinary.uploader.destroy(publicId, {
+          resource_type: resourceType,
+        });
+        console.log("Cloudinary delete result:", result);
+      } catch (error) {
+        console.error("Error deleting from Cloudinary:", error);
+      }
     }
+
     const resume = await uploadOnCloudinary(resumeLocalPath, "resume");
     newProfile.resume = resume?.url || "";
   }
+
   const user = await User.findByIdAndUpdate(req.user._id, newProfile, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
+
   if (!user) {
     throw new ApiError(500, "Error while updating profile");
   }
+
   res.status(200).json(new ApiResponse(200, user, "Profile updated"));
 });
-
 export { registerUser, loginUser, logoutUser, getUser, updateUserProfile };
