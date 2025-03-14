@@ -83,6 +83,9 @@ const register = asyncHandler(async (req, res, next) => {
     avatar: avatar?.url || "",
     resume: resume?.url || "",
   });
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
 
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -90,14 +93,26 @@ const register = asyncHandler(async (req, res, next) => {
   if (!createdUser) {
     throw new ApiError(500, "user not created");
   }
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
-  });
-  res.status(201).json({
-    success: true,
-    token,
-    user: createdUser,
-  });
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          accessToken,
+          refreshToken,
+        },
+        "User logged in"
+      )
+    );
 });
 
 export { register };
