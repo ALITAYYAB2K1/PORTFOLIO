@@ -45,27 +45,27 @@ const registerUser = asyncHandler(async (req, res, next) => {
       (field) => field?.trim() === ""
     )
   ) {
-    return next(new ApiError("Please fill in all fields", 400));
+    throw new ApiError("Please fill in all fields", 400);
   }
   const existedUser = await User.findOne({
     $or: [{ email }, { phone }],
   });
   if (existedUser) {
-    return next(new ApiError("User already exists", 400));
+    throw new ApiError("User already exists", 400);
   }
   const avatarLocalPath = req.files?.avatar[0].path;
   const resumeLocalPath = req.files?.resume[0].path;
   if (!avatarLocalPath) {
-    return next(new ApiError("Please upload an avatar", 400));
+    throw new ApiError("Please upload an avatar", 400);
   }
   if (!resumeLocalPath) {
-    return next(new ApiError("Please upload a resume", 400));
+    throw new ApiError("Please upload a resume", 400);
   }
   const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
   const resume = await uploadOnCloudinary(resumeLocalPath, "resume");
 
   if (!avatar || !resume) {
-    return next(new ApiError("Something went wrong", 500));
+    throw new ApiError("Error while uploading files", 500);
   }
   const user = await User.create({
     fullname,
