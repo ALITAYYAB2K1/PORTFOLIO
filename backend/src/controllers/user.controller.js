@@ -2,8 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { v2 as cloudinary } from "cloudinary";
 import mongoose from "mongoose";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -174,5 +174,57 @@ const logoutUser = asyncHandler(async (req, res, next) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
+const getUser = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id).select(
+    "-password -refreshToken"
+  );
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  return res.status(200).json(new ApiResponse(200, user, "User details"));
+});
 
-export { registerUser, loginUser, logoutUser };
+const updateUserProfile = asyncHandler(async (req, res, next) => {
+  const newProfile = {
+    fullname: req.body.fullname,
+    email: req.body.email,
+    aboutMe: req.body.aboutMe,
+    phone: req.body.phone,
+    portfolioURL: req.body.portfolioURL,
+    githubURL: req.body.githubURL,
+    linkedinURL: req.body.linkedinURL,
+    facebookURL: req.body.facebookURL,
+    twitterURL: req.body.twitterURL,
+  };
+  if (req.files && req.files?.avatar) {
+    const avatarLocalPath = req.files?.avatar[0].path;
+    const previousAvatar = req.user.avatar;
+    if (previousAvatar) {
+      const publicId = previousAvatar.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
+    const avatar = await uploadOnCloudinary(avatarLocalPath, "avatar");
+    newProfile.avatar = avatar?.url || "";
+  }
+  if (req.files && req.files?.resume) {
+    const resumeLocalPath = req.files?.resume[0].path;
+    const previousResume = req.user.resume;
+    if (previousResume) {
+      const publicId = previousResume.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
+    const resume = await uploadOnCloudinary(resumeLocalPath, "resume");
+    newProfile.resume = resume?.url || "";
+  }
+  const user = await User.findByIdAndUpdate(req.user._id, newProfile, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  if (!user) {
+    throw new ApiError(500, "Error while updating profile");
+  }
+  res.status(200).json(new ApiResponse(200, user, "Profile updated"));
+});
+
+export { registerUser, loginUser, logoutUser, getUser, updateUserProfile };
