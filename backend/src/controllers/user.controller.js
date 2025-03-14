@@ -6,9 +6,41 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
+const generateAccessAndRefreshToken = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if (!user) throw new ApiError(404, "User not found");
+
+    if (!user.generateRefreshToken || !user.generateAccessToken) {
+      throw new ApiError(500, "Token generation methods are missing");
+    }
+
+    const refreshToken = user.generateRefreshToken();
+    const accessToken = user.generateAccessToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new ApiError(500, "Error while generating tokens");
+  }
+};
 
 const register = asyncHandler(async (req, res, next) => {
-  const { fullname, email, password, aboutMe, phone } = req.body;
+  const {
+    fullname,
+    email,
+    password,
+    aboutMe,
+    phone,
+    portfolioURL,
+    githubURL,
+    linkedinURL,
+    facebookURL,
+    twitterURL,
+    instagramURL,
+  } = req.body;
   if (
     [fullname, email, password, aboutMe, phone].some(
       (field) => field?.trim() === ""
@@ -42,9 +74,14 @@ const register = asyncHandler(async (req, res, next) => {
     password,
     aboutMe,
     phone,
+    portfolioURL,
+    githubURL,
+    linkedinURL,
+    facebookURL,
+    twitterURL,
+    instagramURL,
     avatar: avatar?.url || "",
-    resume: resume.url || "",
-    portfolioURL: req.body.portfolioURL,
+    resume: resume?.url || "",
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -55,6 +92,11 @@ const register = asyncHandler(async (req, res, next) => {
   }
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
+  });
+  res.status(201).json({
+    success: true,
+    token,
+    user: createdUser,
   });
 });
 
