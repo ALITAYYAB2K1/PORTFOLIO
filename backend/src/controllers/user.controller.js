@@ -4,7 +4,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
-import mongoose from "mongoose";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -306,6 +305,18 @@ const getUserForPortfolio = asyncHandler(async (req, res, next) => {
   res.status(200).json(new ApiResponse(200, user, "User details"));
 });
 
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+  const resetToken = user.generateResetToken();
+  await user.save({ validateBeforeSave: false });
+  // Send email with resetToken
+  const resetPasswordURL = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
+  const message = `your reset password token is as follows: \n\n ${resetPasswordURL} \n\n if you have not requested this email, please ignore it`;
+});
+
 export {
   registerUser,
   loginUser,
@@ -314,4 +325,5 @@ export {
   updateUserProfile,
   updatePassword,
   getUserForPortfolio,
+  forgotPassword,
 };
