@@ -35,9 +35,28 @@ const addNewProject = asyncHandler(async (req, res, next) => {
   res.status(201).json(new ApiResponse("Project created", newProject));
 });
 
-const getAllProject = asyncHandler(async (req, res, next) => {});
+const getAllProject = asyncHandler(async (req, res, next) => {
+  const projects = await Project.find({});
+  if (!projects || projects.length === 0) {
+    throw new ApiError("Projects not found", 404);
+  }
+  res.status(200).json(new ApiResponse("Projects found", projects));
+});
 
-const deleteProject = asyncHandler(async (req, res, next) => {});
+const deleteProject = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+  if (!project) {
+    throw new ApiError("Project not found", 404);
+  }
+  const prevImage = project.image;
+  const publicId = image_ID_Parser(prevImage);
+  console.log(`Attempting to delete image with public ID: ${publicId}`);
+  const result = await cloudinary.uploader.destroy(publicId);
+  console.log(result, "deleted image from cloudinary");
+  await project.deleteOne();
+  res.status(200).json(new ApiResponse("Project deleted", null));
+});
 
 const updateProject = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
