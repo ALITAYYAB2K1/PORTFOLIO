@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendEmail } from "../utils/sendEmail.js";
+import crypto from "crypto";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -332,6 +333,56 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   }
 });
 
+const resetPassword = asyncHandler(async (req, res, next) => {
+  const token = req.params.resetToken;
+  if (!token) {
+    throw new ApiError(400, "Invalid token");
+  }
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new ApiError(400, "Invalid token or token expired");
+  }
+  const { password, confirmPassword } = req.body;
+  if (!password || !confirmPassword) {
+    throw new ApiError("Please provide all fields", 400);
+  }
+  if (password !== confirmPassword) {
+    throw new ApiError("Passwords do not match", 400);
+  }
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save({ validateBeforeSave: false });
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          accessToken,
+          refreshToken,
+        },
+        "password changed successfully"
+      )
+    );
+});
+
 export {
   registerUser,
   loginUser,
@@ -341,4 +392,5 @@ export {
   updatePassword,
   getUserForPortfolio,
   forgotPassword,
+  resetPassword,
 };
