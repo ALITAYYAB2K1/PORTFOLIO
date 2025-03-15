@@ -10,7 +10,10 @@ const timelineSchema = new Schema(
       required: true,
     },
     timeline: {
-      from: String,
+      from: {
+        type: String,
+        required: true,
+      },
       to: String,
     },
   },
