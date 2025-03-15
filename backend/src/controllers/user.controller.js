@@ -311,7 +311,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   if (!user) {
     throw new ApiError(404, "User not found");
   }
-  const resetToken = user.generateResetToken();
+  const resetToken = user.generateResetPasswordToken();
   await user.save({ validateBeforeSave: false });
   // Send email with resetToken
   const resetPasswordURL = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
