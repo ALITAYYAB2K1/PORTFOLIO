@@ -7,12 +7,13 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 const addNewApplication = asyncHandler(async (req, res, next) => {
   const { name } = req.body;
   if (!name) {
-    return next(new ApiError("Name is required", 400));
+    throw new ApiError("Name is required", 400);
   }
   if (!req.files || !req.files.svg) {
-    return next(new ApiError("SVG is required", 400));
+    throw new ApiError("SVG is required", 400);
   }
-  const svg = await uploadOnCloudinary(req.files.svg[0]);
+  const svglocalPath = req.files.svg[0].path;
+  const svg = await uploadOnCloudinary(svglocalPath, "svg");
   const newApplication = await SoftwareApplication.create({
     name: name,
     svg: svg.url || "",
