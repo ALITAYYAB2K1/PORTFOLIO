@@ -99,7 +99,14 @@ const updateProject = asyncHandler(async (req, res, next) => {
   res.status(200).json(new ApiResponse("Project updated", updatedProject));
 });
 
-const getProject = asyncHandler(async (req, res, next) => {});
+const getProject = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  const project = await Project.findById(id);
+  if (!project) {
+    throw new ApiError("Project not found", 404);
+  }
+  res.status(200).json(new ApiResponse("Project found", project));
+});
 
 export {
   addNewProject,
