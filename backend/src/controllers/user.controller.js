@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
+import { sendEmail } from "../utils/sendEmail.js";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -315,6 +316,20 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
   // Send email with resetToken
   const resetPasswordURL = `${process.env.DASHBOARD_URL}/password/reset/${resetToken}`;
   const message = `your reset password token is as follows: \n\n ${resetPasswordURL} \n\n if you have not requested this email, please ignore it`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Password reset token",
+      message,
+    });
+    res.status(200).json(new ApiResponse(200, {}, "Email sent successfully"));
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    throw new ApiError(500, "Error while sending email");
+  }
 });
 
 export {
