@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
+import { image_ID_Parser } from "../utils/imageParser.js";
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -210,10 +211,7 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
       try {
         // Example URL: http://res.cloudinary.com/dutan9dsu/image/upload/v1741970542/fawd7evzmeebyolhqc79.png
         // Extract public ID from URL - this is the part after the last slash without the file extension
-        const urlParts = previousAvatar.split("/");
-        const filenameWithExt = urlParts[urlParts.length - 1];
-        const publicId = filenameWithExt.split(".")[0];
-
+        const publicId = image_ID_Parser(previousAvatar);
         console.log(`Attempting to delete avatar with public ID: ${publicId}`);
 
         // Use the correct method from the Cloudinary API
