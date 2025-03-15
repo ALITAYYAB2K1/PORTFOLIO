@@ -3,6 +3,7 @@ import {
   addNewSkill,
   getAllSkill,
   deleteSkill,
+  updateSkill,
 } from "../controllers/skill.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -14,5 +15,6 @@ router
   .post(verifyJWT, upload.fields([{ name: "svg", maxCount: 1 }]), addNewSkill);
 router.route("/getall").get(verifyJWT, getAllSkill);
 router.route("/delete/:id").delete(verifyJWT, deleteSkill);
+router.route("/update/:id").put(verifyJWT, updateSkill);
 
 export default router;

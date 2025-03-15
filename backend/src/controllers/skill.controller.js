@@ -49,5 +49,20 @@ const deleteSkill = asyncHandler(async (req, res, next) => {
   await skill.deleteOne();
   res.status(200).json(new ApiResponse("Skill deleted", null));
 });
-
-export { addNewSkill, getAllSkill, deleteSkill };
+const updateSkill = asyncHandler(async (req, res, next) => {
+  const { id } = req.params;
+  let skill = await Skill.findById(id);
+  if (!skill) {
+    throw new ApiError("Skill not found", 404);
+  }
+  const { title, proficiency } = req.body;
+  skill = await Skill.findByIdAndUpdate(id, {
+    title: title,
+    proficiency: proficiency,
+  });
+  if (!skill) {
+    return next(new ApiError("Failed to update skill", 500));
+  }
+  res.status(200).json(new ApiResponse("Skill updated", skill));
+});
+export { addNewSkill, getAllSkill, deleteSkill, updateSkill };
