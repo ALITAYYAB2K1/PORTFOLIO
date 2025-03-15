@@ -340,7 +340,7 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   }
   const resetPasswordToken = crypto
     .createHash("sha256")
-    .update(req.params.token)
+    .update(token)
     .digest("hex");
   const user = await User.findOne({
     resetPasswordToken,
