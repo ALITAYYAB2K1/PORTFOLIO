@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
