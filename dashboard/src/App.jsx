@@ -9,6 +9,8 @@ import ManageTimeline from "./pages/ManageTimeline";
 import ManageProjects from "./pages/ManageProjects";
 import ViewProject from "./pages/ViewProject";
 import UpdateProject from "./pages/UpdateProject";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -24,6 +26,7 @@ function App() {
         <Route path="/view/project/:id" element={<ViewProject />} />
         <Route path="/update/project/:id" element={<UpdateProject />} />
       </Routes>
+      <ToastContainer position="buttom-right" theme="dark" />
     </Router>
   );
 }
