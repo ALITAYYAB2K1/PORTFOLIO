@@ -29,14 +29,54 @@ const userSlice = createSlice({
       state.user = {};
       state.error = action.payload;
     },
+    loadUserRequest: (state) => {
+      state.loading = true;
+      state.isAuthenticated = false;
+      state.user = {};
+      state.error = null;
+    },
+    loadUserSuccess: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = true;
+      state.user = action.payload;
+      state.error = null;
+    },
+    loadUserFailed: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.user = {};
+      state.error = action.payload;
+    },
+    logoutSuccess: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.user = {};
+      state.error = null;
+      state.message = action.payload;
+    },
+    logoutFailed: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = state.isAuthenticated;
+      state.user = state.user;
+      state.error = action.payload;
+    },
     clearALLErrors: (state) => {
       state.error = null;
     },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailed, clearALLErrors } =
-  userSlice.actions;
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailed,
+  clearALLErrors,
+  loadUserRequest,
+  loadUserSuccess,
+  loadUserFailed,
+  logoutSuccess,
+  logoutFailed,
+} = userSlice.actions;
 
 // Fix: Correct export of reducer
 export const userReducers = userSlice.reducer;
@@ -73,4 +113,40 @@ export const login =
 
 export const clearAllUserErrors = () => (dispatch) => {
   dispatch(clearALLErrors());
+};
+
+export const getUser = () => async (dispatch) => {
+  dispatch(loadUserRequest());
+  try {
+    const { data } = await axios.get("http://localhost:8000/api/v1/user/me", {
+      withCredentials: true, // ✅ Ensure cookies are sent
+    });
+
+    console.log("Login response received:", data); // ✅ Debugging
+
+    dispatch(loadUserSuccess(data.user));
+    dispatch(clearALLErrors());
+  } catch (error) {
+    dispatch(loadUserFailed(error.response?.data?.message || "some error"));
+  }
+};
+
+export const logout = () => async (dispatch) => {
+  try {
+    const { data } = await axios.get(
+      "http://localhost:8000/api/v1/user/logout",
+      {
+        withCredentials: true, // ✅ Ensure cookies are sent
+      }
+    );
+
+    console.log("Login response received:", data); // ✅ Debugging
+
+    dispatch(logoutSuccess(data.message));
+    dispatch(clearALLErrors());
+  } catch (error) {
+    dispatch(
+      logoutFailed(error.response?.data?.message || "some error while logout")
+    );
+  }
 };

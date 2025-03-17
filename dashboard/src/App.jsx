@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
@@ -11,8 +10,15 @@ import ViewProject from "./pages/ViewProject";
 import UpdateProject from "./pages/UpdateProject";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getUser } from "./store/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUser());
+  });
   return (
     <Router>
       <Routes>
@@ -26,7 +32,9 @@ function App() {
         <Route path="/view/project/:id" element={<ViewProject />} />
         <Route path="/update/project/:id" element={<UpdateProject />} />
       </Routes>
-      <ToastContainer position="buttom-right" theme="dark" />
+
+      {/* ✅ Fixed ToastContainer with correct position */}
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
     </Router>
   );
 }
