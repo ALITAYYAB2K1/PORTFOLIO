@@ -29,10 +29,26 @@ const userSlice = createSlice({
       state.user = {};
       state.error = action.payload;
     },
+    clearALLErrors: (state, action) => {
+      state.error = null;
+      state.user = state.user;
+    },
   },
 });
 
 export const login = (email, password) => async (dispatch) => {
+  dispatch(userSlice.actions.loginRequest());
   try {
-  } catch (error) {}
+    const { data } = await axios.post(
+      "/api/users/login",
+      { email, password },
+      { withCredentials: true, headers: { "Content-Type": "application/json" } }
+    );
+    dispatch(userSlice.actions.loginSuccess(data));
+    dispatch(userSlice.actions.clearALLErrors());
+  } catch (error) {
+    dispatch(userSlice.actions.loginFailed(error.response.data.message));
+  }
 };
+
+export default userSlice.reducer;
