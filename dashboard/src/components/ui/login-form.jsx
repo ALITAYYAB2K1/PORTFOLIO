@@ -1,10 +1,37 @@
+import { useSelector } from "react-redux";
 import { cn } from "../../lib/utils";
 import { Button } from "./button";
 import { Card, CardContent } from "./card";
 import { Input } from "./input";
 import { Label } from "./label";
+import { clearAllUserErrors, login } from "../../store/userSlice";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 export function LoginForm({ className, ...props }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { loading, isAuthenticated, error, message } = useSelector(
+    (state) => state.user
+  );
+  const dispatch = useDispatch();
+  const navigateTo = useNavigate();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearAllUserErrors());
+    }
+    if (isAuthenticated) {
+      navigateTo("/");
+    }
+  }, [error, isAuthenticated, loading, dispatch, navigateTo]);
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
@@ -23,22 +50,30 @@ export function LoginForm({ className, ...props }) {
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    to={"/password/forgot"}
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" onClick={handleLogin}>
                 Login
               </Button>
 
