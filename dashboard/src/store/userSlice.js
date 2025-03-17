@@ -133,20 +133,23 @@ export const getUser = () => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
-    const { data } = await axios.get(
+    const { data } = await axios.post(
+      // ✅ Use GET if required by backend
       "http://localhost:8000/api/v1/user/logout",
       {
         withCredentials: true, // ✅ Ensure cookies are sent
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
     );
-
-    console.log("Login response received:", data); // ✅ Debugging
 
     dispatch(logoutSuccess(data.message));
     dispatch(clearALLErrors());
   } catch (error) {
+    console.error("Logout failed:", error.response?.data || error); // ✅ Debugging
     dispatch(
-      logoutFailed(error.response?.data?.message || "some error while logout")
+      logoutFailed(error.response?.data?.message || "Error during logout")
     );
   }
 };
