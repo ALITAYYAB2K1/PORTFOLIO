@@ -6,12 +6,12 @@ const userSlice = createSlice({
   initialState: {
     loading: false,
     user: {},
-    isAuthinticated: false,
+    isAuthinticated: false, // Also, fix typo: "isAuthenticated"
     error: null,
     message: null,
   },
   reducers: {
-    loginRequest: (state, action) => {
+    loginRequest: (state) => {
       state.loading = true;
       state.isAuthinticated = false;
       state.user = {};
@@ -29,26 +29,30 @@ const userSlice = createSlice({
       state.user = {};
       state.error = action.payload;
     },
-    clearALLErrors: (state, action) => {
+    clearALLErrors: (state) => {
       state.error = null;
-      state.user = state.user;
     },
   },
 });
 
+export const { loginRequest, loginSuccess, loginFailed, clearALLErrors } =
+  userSlice.actions;
+
+// Fix: Correct export of reducer
+export const userReducers = userSlice.reducer;
+
+// Async login function
 export const login = (email, password) => async (dispatch) => {
-  dispatch(userSlice.actions.loginRequest());
+  dispatch(loginRequest());
   try {
     const { data } = await axios.post(
       "/api/users/login",
       { email, password },
       { withCredentials: true, headers: { "Content-Type": "application/json" } }
     );
-    dispatch(userSlice.actions.loginSuccess(data));
-    dispatch(userSlice.actions.clearALLErrors());
+    dispatch(loginSuccess(data));
+    dispatch(clearALLErrors());
   } catch (error) {
-    dispatch(userSlice.actions.loginFailed(error.response.data.message));
+    dispatch(loginFailed(error.response.data.message));
   }
 };
-
-export default userSlice.reducer;
