@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import SpecialLoadingButton from "../../pages/sub-components/SpecialLoadingButton";
 
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
@@ -73,9 +74,13 @@ export function LoginForm({ className, ...props }) {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full" onClick={handleLogin}>
-                Login
-              </Button>
+              {loading ? (
+                <SpecialLoadingButton content={"logging in"} />
+              ) : (
+                <Button type="submit" className="w-full" onClick={handleLogin}>
+                  Login
+                </Button>
+              )}
 
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
