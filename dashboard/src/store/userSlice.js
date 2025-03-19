@@ -181,21 +181,21 @@ export const getUser = () => async (dispatch) => {
 
 export const logout = () => async (dispatch) => {
   try {
+    console.log("Attempting logout...");
+
     const { data } = await axios.post(
-      // ✅ Use GET if required by backend
       "http://localhost:8000/api/v1/user/logout",
+      {}, // 👈 Empty object as logout might not need a request body
       {
-        withCredentials: true, // ✅ Ensure cookies are sent
-        headers: {
-          "Content-Type": "application/json",
-        },
+        withCredentials: true, // 👈 Ensures cookies are included
       }
     );
 
+    console.log("Logout successful:", data);
     dispatch(logoutSuccess(data.message));
     dispatch(clearALLErrors());
   } catch (error) {
-    console.error("Logout failed:", error.response?.data || error); // ✅ Debugging
+    console.error("Logout failed:", error.response?.data || error);
     dispatch(
       logoutFailed(error.response?.data?.message || "Error during logout")
     );
@@ -211,7 +211,7 @@ export const updatePassword =
         "http://localhost:8000/api/v1/user/update/password",
         { currentPassword, newPassword, confirmNewPassword },
         {
-          withCredentials: true, // ✅ Ensure cookies are sent
+          //withCredentials: true, // ✅ Ensure cookies are sent
           headers: {
             "Content-Type": "application/json",
           },

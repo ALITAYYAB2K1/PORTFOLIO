@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { cn } from "../../lib/utils";
 import { Button } from "./button";
 import { Card, CardContent } from "./card";
@@ -7,23 +7,23 @@ import { Label } from "./label";
 import { clearAllUserErrors, login } from "../../store/userSlice";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import SpecialLoadingButton from "../../pages/sub-components/SpecialLoadingButton";
 
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, isAuthenticated, error, message } = useSelector(
+  const { loading, isAuthenticated, error } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(login({ email, password }));
   };
+
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -32,7 +32,8 @@ export function LoginForm({ className, ...props }) {
     if (isAuthenticated) {
       navigateTo("/");
     }
-  }, [error, isAuthenticated, loading, dispatch, navigateTo]);
+  }, [error, isAuthenticated, dispatch, navigateTo]);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
@@ -75,18 +76,21 @@ export function LoginForm({ className, ...props }) {
                 />
               </div>
               {loading ? (
-                <SpecialLoadingButton content={"logging in"} />
+                <SpecialLoadingButton content={"Logging in..."} />
               ) : (
-                <Button type="submit" className="w-full" onClick={handleLogin}>
+                <Button
+                  type="submit"
+                  className="w-full bg-black text-white hover:bg-gray-900 transition cursor-pointer"
+                  onClick={handleLogin}
+                >
                   Login
                 </Button>
               )}
-
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <Link to="/signup" className="underline underline-offset-4">
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>
@@ -99,7 +103,7 @@ export function LoginForm({ className, ...props }) {
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
+      <div className="text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </div>

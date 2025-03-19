@@ -72,7 +72,7 @@ export const forgotPassword = (email) => async (dispatch) => {
       { email },
       {
         headers: {
-          withCredentials: true,
+          //withCredentials: true,
           "Content-Type": "application/json",
         },
       }
@@ -93,7 +93,7 @@ export const resetPassword =
         { password, confirmPassoword },
         {
           headers: {
-            withCredentials: true,
+            //withCredentials: true,
             "Content-Type": "application/json",
           },
         }
