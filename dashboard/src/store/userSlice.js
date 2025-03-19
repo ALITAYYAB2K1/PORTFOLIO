@@ -60,6 +60,47 @@ const userSlice = createSlice({
       state.user = state.user;
       state.error = action.payload;
     },
+    updatePasswordRequest: (state) => {
+      state.loading = true;
+      state.isUpdated = false;
+      state.error = null;
+      state.message = null;
+    },
+    updatePasswordSuccess: (state, action) => {
+      state.loading = false;
+      state.isUpdated = true;
+      state.error = null;
+      state.message = action.payload;
+    },
+    updatePasswordFailed: (state, action) => {
+      state.loading = false;
+      state.isUpdated = false;
+      state.error = action.payload;
+      state.message = null;
+    },
+    updateProfileRequest: (state) => {
+      state.loading = true;
+      state.isUpdated = false;
+      state.error = null;
+      state.message = null;
+    },
+    updateProfileSuccess: (state, action) => {
+      state.loading = false;
+      state.isUpdated = true;
+      state.error = null;
+      state.message = action.payload;
+    },
+    updateProfileFailed: (state, action) => {
+      state.loading = false;
+      state.isUpdated = false;
+      state.error = action.payload;
+      state.message = null;
+    },
+    updateProfileResetAfterUpdate: (state, action) => {
+      state.error = null;
+      state.isUpdated = false;
+      state.message = null;
+    },
     clearALLErrors: (state) => {
       state.error = null;
     },
@@ -76,6 +117,12 @@ export const {
   loadUserFailed,
   logoutSuccess,
   logoutFailed,
+  updatePasswordRequest,
+  updatePasswordSuccess,
+  updatePasswordFailed,
+  updateProfileRequest,
+  updateProfileSuccess,
+  updateProfileFailed,
 } = userSlice.actions;
 
 // Fix: Correct export of reducer
@@ -153,3 +200,31 @@ export const logout = () => async (dispatch) => {
     );
   }
 };
+
+export const updatePassword =
+  (currentPassword, newPassword, confirmNewPassword) => async (dispatch) => {
+    dispatch(updatePasswordRequest());
+    try {
+      const { data } = await axios.post(
+        // ✅ Use GET if required by backend
+        "http://localhost:8000/api/v1/user/update/password",
+        { currentPassword, newPassword, confirmNewPassword },
+        {
+          withCredentials: true, // ✅ Ensure cookies are sent
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      dispatch(updatePasswordSuccess(data.message));
+      dispatch(clearALLErrors());
+    } catch (error) {
+      console.error("update password failed :", error.response?.data || error); // ✅ Debugging
+      dispatch(
+        updatePasswordFailed(
+          error.response?.data?.message || "Error during password update"
+        )
+      );
+    }
+  };

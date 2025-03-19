@@ -34,7 +34,7 @@ function App() {
       </Routes>
 
       {/* ✅ Fixed ToastContainer with correct position */}
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
+      <ToastContainer position="bottom-right" autoClose={5000} theme="dark" />
     </Router>
   );
 }
