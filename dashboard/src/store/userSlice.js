@@ -123,6 +123,7 @@ export const {
   updateProfileRequest,
   updateProfileSuccess,
   updateProfileFailed,
+  updateProfileResetAfterUpdate,
 } = userSlice.actions;
 
 // Fix: Correct export of reducer
@@ -205,7 +206,7 @@ export const updatePassword =
   (currentPassword, newPassword, confirmNewPassword) => async (dispatch) => {
     dispatch(updatePasswordRequest());
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.patch(
         // ✅ Use GET if required by backend
         "http://localhost:8000/api/v1/user/update/password",
         { currentPassword, newPassword, confirmNewPassword },
@@ -216,7 +217,6 @@ export const updatePassword =
           },
         }
       );
-
       dispatch(updatePasswordSuccess(data.message));
       dispatch(clearALLErrors());
     } catch (error) {
@@ -228,3 +228,33 @@ export const updatePassword =
       );
     }
   };
+
+export const updateProfile = (data) => async (dispatch) => {
+  dispatch(updateProfileRequest());
+  try {
+    const { data } = await axios.put(
+      // ✅ Use GET if required by backend
+      "http://localhost:8000/api/v1/user/update/me",
+      data,
+      {
+        withCredentials: true, // ✅ Ensure cookies are sent
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    dispatch(updateProfileSuccess(data.message));
+    dispatch(clearALLErrors());
+  } catch (error) {
+    console.error("update profile failed :", error.response?.data || error); // ✅ Debugging
+    dispatch(
+      updateProfileFailed(
+        error.response?.data?.message || "Error during profile update"
+      )
+    );
+  }
+};
+
+export const resetProfile = () => (dispatch) => {
+  dispatch(updateProfileResetAfterUpdate());
+};
