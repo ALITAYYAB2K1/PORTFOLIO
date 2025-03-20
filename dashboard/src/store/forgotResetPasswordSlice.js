@@ -68,7 +68,7 @@ export const forgotPassword = (email) => async (dispatch) => {
   dispatch(forgotPasswordRequest());
   try {
     const { data } = await axios.post(
-      "http://localhost:8000/api/v1/password/forgot",
+      "http://localhost:8000/api/v1/user/password/forgot",
       { email },
       {
         headers: {
@@ -89,7 +89,7 @@ export const resetPassword =
     dispatch(resetPasswordRequest());
     try {
       const { data } = await axios.put(
-        `http://localhost:8000/api/v1/password/reset/${token}`,
+        `http://localhost:8000/api/v1/user/password/reset/${token}`,
         { password, confirmPassoword },
         {
           headers: {
