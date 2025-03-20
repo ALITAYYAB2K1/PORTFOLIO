@@ -215,6 +215,7 @@ function HomePage() {
             </TooltipProvider>
           </nav>
         </aside>
+        <header className="sticky top-0 left-0 hidden w-14 flex-col border-r bg-background px-4 sm:static sm:h-auto sm:border-0"></header>
       </div>
     </>
   );
