@@ -31,7 +31,13 @@ import {
   SheetTitle, // Added this import for accessibility
   SheetHeader, // Added this import for better structure
 } from "../components/ui/sheet";
-
+import { Dashboard } from "./sub-components/Dashboard";
+import { AddProject } from "./sub-components/AddProject";
+import { AddSkills } from "./sub-components/AddSkills";
+import { AddApplication } from "./sub-components/AddApplication";
+import { AddTimeline } from "./sub-components/AddTimeline";
+import { Messages } from "./sub-components/Messages";
+import { Account } from "./sub-components/Account";
 function HomePage() {
   const [active, setActive] = useState("Dashboard");
   const dispatch = useDispatch();
