@@ -85,21 +85,23 @@ export const forgotPassword = (email) => async (dispatch) => {
 };
 
 export const resetPassword =
-  (token, password, confirmPassoword) => async (dispatch) => {
+  (token, password, confirmPassword, navigateTo) => async (dispatch) => {
     dispatch(resetPasswordRequest());
     try {
       const { data } = await axios.put(
         `http://localhost:8000/api/v1/user/password/reset/${token}`,
-        { password, confirmPassoword },
+        { password, confirmPassword },
         {
           headers: {
-            //withCredentials: true,
             "Content-Type": "application/json",
           },
         }
       );
       dispatch(resetPasswordSuccess(data.message));
       dispatch(clearALLErrors());
+
+      // ✅ Navigate to home after successful password reset
+      navigateTo("/");
     } catch (error) {
       dispatch(resetPasswordFailed(error.response.data.message));
     }
