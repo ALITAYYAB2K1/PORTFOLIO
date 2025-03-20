@@ -4,7 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearAllUserErrors, logout } from "../store/userSlice";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { Home, Package } from "lucide-react";
+import {
+  FolderGit,
+  History,
+  Home,
+  LayoutGrid,
+  LogOut,
+  MessagesSquare,
+  Package,
+  SquareUser,
+} from "lucide-react";
 import {
   TooltipProvider,
   Tooltip,
@@ -55,12 +64,153 @@ function HomePage() {
                         ? "text-accent-foreground bg-accent"
                         : "text-muted-foreground"
                     }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("dashboard")}
                   >
                     <Home className="h-5 w-5" />
                     <span className="sr-only">Dashboard</span>
                   </Link>
                 </TooltipTrigger>
-                <TooltipContent side="right">Dashboard</TooltipContent>
+                <TooltipContent side="right" className={`text-md`}>
+                  Dashboard
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Add Project"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Add Project")}
+                  >
+                    <FolderGit className="h-5 w-5" />
+                    <span className="sr-only">ADD PROJECT</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  ADD PROJECT
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Add Skills"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Add Skills")}
+                  >
+                    <FolderGit className="h-5 w-5" />
+                    <span className="sr-only">Add Skills</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Add Skills
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Add Application"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Add Application")}
+                  >
+                    <LayoutGrid className="h-5 w-5" />
+                    <span className="sr-only">Add Application</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Add Application
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Add Timeline"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Add Timeline")}
+                  >
+                    <History className="h-5 w-5" />
+                    <span className="sr-only">Add Timeline</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Add Timeline
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Messages"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Messages")}
+                  >
+                    <MessagesSquare className="h-5 w-5" />
+                    <span className="sr-only">Messages</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Messages
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "Account"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                    onClick={() => setActive("Account")}
+                  >
+                    <SquareUser className="h-5 w-5" />
+                    <span className="sr-only">Account</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Account
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </nav>
+          <nav className="flex flex-col items-center gap-4 mt-auto">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg`}
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="sr-only">Logout</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right" className={`text-md`}>
+                  Logout
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </nav>
