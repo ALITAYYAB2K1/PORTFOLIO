@@ -442,6 +442,34 @@ function HomePage() {
           </h1>
         </div>
       </header>
+      {() => {
+        switch (active) {
+          case "Dashboard":
+            return <Dashboard />;
+            break;
+          case "Add Project":
+            return <AddProject />;
+            break;
+          case "Add Skills":
+            return <AddSkills />;
+            break;
+          case "Add Application":
+            return <AddApplication />;
+            break;
+          case "Add Timeline":
+            return <AddTimeline />;
+            break;
+          case "Messages":
+            return <Messages />;
+            break;
+          case "Account":
+            return <Account />;
+            break;
+          default:
+            return <Dashboard />;
+            break;
+        }
+      }}
 
       {/* Main Content Area */}
       <main className="flex-1 p-4 md:p-6 md:ml-14">
