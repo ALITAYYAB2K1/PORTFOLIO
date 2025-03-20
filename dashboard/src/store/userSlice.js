@@ -179,7 +179,7 @@ export const getUser = () => async (dispatch) => {
   }
 };
 
-export const logout = () => async (dispatch) => {
+export const logout = (navigateTo) => async (dispatch) => {
   try {
     console.log("Attempting logout...");
 
@@ -194,6 +194,7 @@ export const logout = () => async (dispatch) => {
     console.log("Logout successful:", data);
     dispatch(logoutSuccess(data.message));
     dispatch(clearALLErrors());
+    navigateTo("/login");
   } catch (error) {
     console.error("Logout failed:", error.response?.data || error);
     dispatch(

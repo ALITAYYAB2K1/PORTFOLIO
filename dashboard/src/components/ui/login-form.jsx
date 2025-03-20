@@ -13,7 +13,7 @@ import SpecialLoadingButton from "../../pages/sub-components/SpecialLoadingButto
 export function LoginForm({ className, ...props }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading, isAuthenticated, error } = useSelector(
+  const { loading, isAuthenticated, error, success } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();
@@ -31,6 +31,10 @@ export function LoginForm({ className, ...props }) {
     }
     if (isAuthenticated) {
       navigateTo("/");
+    }
+    if (success) {
+      toast.success(success);
+      dispatch(clearAllUserErrors());
     }
   }, [error, isAuthenticated, dispatch, navigateTo]);
 
