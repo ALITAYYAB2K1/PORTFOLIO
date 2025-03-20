@@ -13,12 +13,17 @@ import { ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getUser } from "./store/userSlice";
+import { checkUserAuthentication } from "./store/userSlice";
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getUser());
   });
+  useEffect(() => {
+    // Check authentication when app starts
+    dispatch(checkUserAuthentication());
+  }, [dispatch]);
   return (
     <Router>
       <Routes>

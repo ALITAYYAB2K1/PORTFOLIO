@@ -128,7 +128,7 @@ export const userReducers = userSlice.reducer;
 
 // Async login function
 export const login =
-  ({ email, password }) =>
+  ({ email, password }, navigateTo) =>
   async (dispatch) => {
     dispatch(loginRequest());
     try {
@@ -145,9 +145,15 @@ export const login =
 
       console.log("Login response received:", data);
 
-      // Pass the entire response - our reducer will extract the data portion
+      // Store basic auth data
       dispatch(loginSuccess(data));
+
+      // Then immediately fetch complete user data
+      await dispatch(getUser());
+
+      // Only navigate after both operations are complete
       dispatch(clearALLErrors());
+      if (navigateTo) navigateTo("/");
     } catch (error) {
       console.error(
         "Login failed:",
@@ -263,4 +269,20 @@ export const updateProfile = (userData) => async (dispatch) => {
 
 export const resetProfile = () => (dispatch) => {
   dispatch(updateProfileResetAfterUpdate());
+};
+
+export const checkUserAuthentication = () => async (dispatch) => {
+  try {
+    // Make a lightweight API call to check if user is authenticated
+    const { data } = await axios.get("http://localhost:8000/api/v1/user/me", {
+      withCredentials: true,
+    });
+
+    if (data.success) {
+      dispatch(loadUserSuccess(data.data));
+    }
+  } catch (error) {
+    // User is not authenticated, don't show error toast
+    console.log("User not authenticated", error);
+  }
 };

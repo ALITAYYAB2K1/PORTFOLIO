@@ -21,7 +21,7 @@ export function LoginForm({ className, ...props }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({ email, password }, navigateTo));
   };
 
   useEffect(() => {
