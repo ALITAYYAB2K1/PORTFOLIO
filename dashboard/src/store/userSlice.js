@@ -5,8 +5,8 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     loading: false,
-    user: {},
-    isAuthenticated: false, // Also, fix typo: "isAuthenticated"
+    user: null, // Changed from {} to null for easier checks
+    isAuthenticated: false,
     error: null,
     message: null,
   },
@@ -14,26 +14,26 @@ const userSlice = createSlice({
     loginRequest: (state) => {
       state.loading = true;
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.error = null;
     },
     loginSuccess: (state, action) => {
       state.loading = false;
       state.isAuthenticated = true;
-      state.user = action.payload;
+      // Store the user data from the nested structure
+      state.user = action.payload.data;
       state.error = null;
     },
     loginFailed: (state, action) => {
       state.loading = false;
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.error = action.payload;
     },
     loadUserRequest: (state) => {
       state.loading = true;
-      state.isAuthenticated = false;
-      state.user = {};
       state.error = null;
+      // Don't reset user data or auth state here
     },
     loadUserSuccess: (state, action) => {
       state.loading = false;
@@ -44,20 +44,18 @@ const userSlice = createSlice({
     loadUserFailed: (state, action) => {
       state.loading = false;
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.error = action.payload;
     },
     logoutSuccess: (state, action) => {
       state.loading = false;
       state.isAuthenticated = false;
-      state.user = {};
+      state.user = null;
       state.error = null;
       state.message = action.payload;
     },
     logoutFailed: (state, action) => {
       state.loading = false;
-      state.isAuthenticated = state.isAuthenticated;
-      state.user = state.user;
       state.error = action.payload;
     },
     updatePasswordRequest: (state) => {
@@ -96,7 +94,7 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.message = null;
     },
-    updateProfileResetAfterUpdate: (state, action) => {
+    updateProfileResetAfterUpdate: (state) => {
       state.error = null;
       state.isUpdated = false;
       state.message = null;
@@ -126,7 +124,6 @@ export const {
   updateProfileResetAfterUpdate,
 } = userSlice.actions;
 
-// Fix: Correct export of reducer
 export const userReducers = userSlice.reducer;
 
 // Async login function
@@ -135,26 +132,27 @@ export const login =
   async (dispatch) => {
     dispatch(loginRequest());
     try {
-      console.log("Sending login request with:", { email, password }); // ✅ Debugging
+      console.log("Sending login request with:", { email, password });
 
       const { data } = await axios.post(
         "http://localhost:8000/api/v1/user/login",
         { email, password },
         {
-          withCredentials: true, // ✅ Ensure cookies are sent
+          withCredentials: true,
           headers: { "Content-Type": "application/json" },
         }
       );
 
-      console.log("Login response received:", data); // ✅ Debugging
+      console.log("Login response received:", data);
 
+      // Pass the entire response - our reducer will extract the data portion
       dispatch(loginSuccess(data));
       dispatch(clearALLErrors());
     } catch (error) {
       console.error(
         "Login failed:",
         error.response ? error.response.data : error
-      ); // ✅ Debugging
+      );
       dispatch(loginFailed(error.response?.data?.message || "Login failed"));
     }
   };
@@ -167,15 +165,24 @@ export const getUser = () => async (dispatch) => {
   dispatch(loadUserRequest());
   try {
     const { data } = await axios.get("http://localhost:8000/api/v1/user/me", {
-      withCredentials: true, // ✅ Ensure cookies are sent
+      withCredentials: true,
     });
 
-    console.log("Login response received:", data); // ✅ Debugging
+    console.log("User data received:", data);
 
-    dispatch(loadUserSuccess(data.user));
+    // Pass the user data directly
+    dispatch(loadUserSuccess(data.data));
     dispatch(clearALLErrors());
   } catch (error) {
-    dispatch(loadUserFailed(error.response?.data?.message || "some error"));
+    console.error(
+      "Get user failed:",
+      error.response ? error.response.data : error
+    );
+    dispatch(
+      loadUserFailed(
+        error.response?.data?.message || "Failed to load user data"
+      )
+    );
   }
 };
 
@@ -185,9 +192,9 @@ export const logout = (navigateTo) => async (dispatch) => {
 
     const { data } = await axios.post(
       "http://localhost:8000/api/v1/user/logout",
-      {}, // 👈 Empty object as logout might not need a request body
+      {},
       {
-        withCredentials: true, // 👈 Ensures cookies are included
+        withCredentials: true,
       }
     );
 
@@ -208,11 +215,10 @@ export const updatePassword =
     dispatch(updatePasswordRequest());
     try {
       const { data } = await axios.patch(
-        // ✅ Use GET if required by backend
         "http://localhost:8000/api/v1/user/update/password",
         { currentPassword, newPassword, confirmNewPassword },
         {
-          //withCredentials: true, // ✅ Ensure cookies are sent
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -221,7 +227,7 @@ export const updatePassword =
       dispatch(updatePasswordSuccess(data.message));
       dispatch(clearALLErrors());
     } catch (error) {
-      console.error("update password failed :", error.response?.data || error); // ✅ Debugging
+      console.error("Update password failed:", error.response?.data || error);
       dispatch(
         updatePasswordFailed(
           error.response?.data?.message || "Error during password update"
@@ -230,15 +236,14 @@ export const updatePassword =
     }
   };
 
-export const updateProfile = (data) => async (dispatch) => {
+export const updateProfile = (userData) => async (dispatch) => {
   dispatch(updateProfileRequest());
   try {
     const { data } = await axios.put(
-      // ✅ Use GET if required by backend
       "http://localhost:8000/api/v1/user/update/me",
-      data,
+      userData,
       {
-        withCredentials: true, // ✅ Ensure cookies are sent
+        withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -247,7 +252,7 @@ export const updateProfile = (data) => async (dispatch) => {
     dispatch(updateProfileSuccess(data.message));
     dispatch(clearALLErrors());
   } catch (error) {
-    console.error("update profile failed :", error.response?.data || error); // ✅ Debugging
+    console.error("Update profile failed:", error.response?.data || error);
     dispatch(
       updateProfileFailed(
         error.response?.data?.message || "Error during profile update"
