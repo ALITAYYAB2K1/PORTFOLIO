@@ -4,6 +4,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearAllUserErrors, logout } from "../store/userSlice";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { Home, Package } from "lucide-react";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "../components/ui/tooltip";
 
 function HomePage() {
   const [active, setActive] = useState("");
@@ -32,12 +39,31 @@ function HomePage() {
   return (
     <>
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
-        <aside className="fixed inset-y-0 left-0 hidden w-14 flex-col border-r bg-background sm:flex z-50">
-          <nav className="flex flex-col items-center gap-4 px-2 sm:py-5"></nav>
-          <Link className="group flex h-p w-p shrink-0 items-center justify-center gap-2 rounded-full">
-            <Package className="h-4 w-4 transition-all group-hover:scale-110" />
-            <span></span>
-          </Link>
+        <aside className="fixed inset-y-0 left-0 flex w-14 flex-col items-center border-r bg-background sm:flex z-50 py-4">
+          <nav className="flex flex-col items-center gap-4">
+            <Link className="group flex h-9 w-9 items-center justify-center rounded-lg transition-all hover:bg-accent">
+              <Package className="h-5 w-5 transition-all group-hover:scale-110" />
+              <span className="sr-only">Dashboard</span>
+            </Link>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                      active === "dashboard"
+                        ? "text-accent-foreground bg-accent"
+                        : "text-muted-foreground"
+                    }  transition-colors hover:text-foreground`}
+                  >
+                    <Home className="h-5 w-5" />
+                    <span className="sr-only">Dashboard</span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Dashboard</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </nav>
         </aside>
       </div>
     </>
