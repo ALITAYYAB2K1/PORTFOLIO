@@ -142,7 +142,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/add-project"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Project"
                       ? "text-accent-foreground bg-accent"
@@ -163,7 +162,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/add-skills"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Skills"
                       ? "text-accent-foreground bg-accent"
@@ -184,7 +182,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/add-application"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Application"
                       ? "text-accent-foreground bg-accent"
@@ -205,7 +202,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/add-timeline"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Timeline"
                       ? "text-accent-foreground bg-accent"
@@ -226,7 +222,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/messages"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Messages"
                       ? "text-accent-foreground bg-accent"
@@ -247,7 +242,6 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/account"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Account"
                       ? "text-accent-foreground bg-accent"
@@ -341,7 +335,6 @@ function HomePage() {
                   Dashboard
                 </Link>
                 <Link
-                  to="/add-project"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Project"
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -353,7 +346,6 @@ function HomePage() {
                   Add Project
                 </Link>
                 <Link
-                  to="/add-skills"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Skills"
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -377,7 +369,6 @@ function HomePage() {
                   Add Application
                 </Link>
                 <Link
-                  to="/add-timeline"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Timeline"
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -389,7 +380,6 @@ function HomePage() {
                   Add Timeline
                 </Link>
                 <Link
-                  to="/messages"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Messages"
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -401,7 +391,6 @@ function HomePage() {
                   Messages
                 </Link>
                 <Link
-                  to="/account"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Account"
                       ? "bg-accent text-accent-foreground font-semibold"
@@ -448,7 +437,7 @@ function HomePage() {
           </h1>
         </div>
       </header>
-      {() => {
+      {(() => {
         switch (active) {
           case "Dashboard":
             return <Dashboard />;
@@ -475,7 +464,7 @@ function HomePage() {
             return <Dashboard />;
             break;
         }
-      }}
+      })()}
 
       {/* Main Content Area */}
       <main className="flex-1 p-4 md:p-6 md:ml-14">

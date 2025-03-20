@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-function Account() {
+import Profile from "./Profile";
+import UpdateProfile from "./UpdateProfile";
+import UpdatePassword from "./UpdatePassword";
+export function Account() {
   const [selectedComponent, setSelectedComponent] = useState("Profile");
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -67,5 +70,3 @@ function Account() {
     </div>
   );
 }
-
-export default Account;

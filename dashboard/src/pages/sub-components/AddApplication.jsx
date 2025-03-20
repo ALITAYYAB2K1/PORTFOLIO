@@ -1,7 +1,5 @@
 import React from "react";
 
-function AddApplication() {
+export function AddApplication() {
   return <div>AddApplication</div>;
 }
-
-export default AddApplication;

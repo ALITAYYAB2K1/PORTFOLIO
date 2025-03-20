@@ -1,7 +1,5 @@
 import React from "react";
 
-function Addskills() {
+export function AddSkills() {
   return <div>Addskills</div>;
 }
-
-export default Addskills;

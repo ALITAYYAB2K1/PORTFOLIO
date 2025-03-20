@@ -1,7 +1,5 @@
 import React from "react";
 
-function AddTimeline() {
+export function AddTimeline() {
   return <div>AddTimeline</div>;
 }
-
-export default AddTimeline;
