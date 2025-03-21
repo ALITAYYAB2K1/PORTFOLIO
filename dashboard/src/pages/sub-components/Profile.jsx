@@ -65,7 +65,7 @@ export default function Profile() {
               </div>
               <div className="grid gap-2">
                 <Label>LinkedIn URL</Label>
-                <Input type="text" defaultValue={user.linkedInURL} disabled />
+                <Input type="text" defaultValue={user.linkedinURL} disabled />
               </div>
               <div className="grid gap-2">
                 <Label>Instagram URL</Label>

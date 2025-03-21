@@ -197,6 +197,7 @@ const updateUserProfile = asyncHandler(async (req, res, next) => {
     linkedinURL: req.body.linkedinURL || req.user.linkedinURL || "",
     facebookURL: req.body.facebookURL || req.user.facebookURL || "",
     twitterURL: req.body.twitterURL || req.user.twitterURL || "",
+    instagramURL: req.body.instagramURL || req.user.instagramURL || "",
   };
 
   // Import v2 directly at the top of your file if not already done
