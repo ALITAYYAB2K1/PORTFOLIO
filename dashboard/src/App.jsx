@@ -12,18 +12,16 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getUser } from "./store/userSlice";
-import { checkUserAuthentication } from "./store/userSlice";
+import { getUser, checkUserAuthentication } from "./store/userSlice";
 
 function App() {
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getUser());
-  });
-  useEffect(() => {
-    // Check authentication when app starts
     dispatch(checkUserAuthentication());
-  }, [dispatch]);
+  }, [dispatch]); // Run once on mount
+
   return (
     <Router>
       <Routes>
@@ -38,7 +36,6 @@ function App() {
         <Route path="/update/project/:id" element={<UpdateProject />} />
       </Routes>
 
-      {/* ✅ Fixed ToastContainer with correct position */}
       <ToastContainer position="bottom-right" autoClose={5000} theme="dark" />
     </Router>
   );
