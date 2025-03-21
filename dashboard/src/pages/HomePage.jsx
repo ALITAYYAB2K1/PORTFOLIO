@@ -28,8 +28,8 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetTitle, // Added this import for accessibility
-  SheetHeader, // Added this import for better structure
+  SheetTitle,
+  SheetHeader,
 } from "../components/ui/sheet";
 import { Dashboard } from "./sub-components/Dashboard";
 import { AddProject } from "./sub-components/AddProject";
@@ -38,6 +38,7 @@ import { AddApplication } from "./sub-components/AddApplication";
 import { AddTimeline } from "./sub-components/AddTimeline";
 import { Messages } from "./sub-components/Messages";
 import { Account } from "./sub-components/Account";
+
 function HomePage() {
   const [active, setActive] = useState("Dashboard");
   const dispatch = useDispatch();
@@ -104,6 +105,28 @@ function HomePage() {
   // Check if we're still loading
   const showLoading = isPageLoading || loading;
 
+  // Function to render the active component
+  const renderActiveComponent = () => {
+    switch (active) {
+      case "Dashboard":
+        return <Dashboard />;
+      case "Add Project":
+        return <AddProject />;
+      case "Add Skills":
+        return <AddSkills />;
+      case "Add Application":
+        return <AddApplication />;
+      case "Add Timeline":
+        return <AddTimeline />;
+      case "Messages":
+        return <Messages />;
+      case "Account":
+        return <Account />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       {/* Desktop Sidebar - Hidden on mobile */}
@@ -121,13 +144,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to="/"
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Dashboard"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Dashboard")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Dashboard");
+                  }}
                 >
                   <Home className="h-5 w-5" />
                   <span className="sr-only">Dashboard</span>
@@ -142,12 +168,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Project"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Add Project")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Project");
+                  }}
                 >
                   <FolderGit className="h-5 w-5" />
                   <span className="sr-only">ADD PROJECT</span>
@@ -162,12 +192,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Skills"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Add Skills")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Skills");
+                  }}
                 >
                   <PencilRuler className="h-5 w-5" />
                   <span className="sr-only">Add Skills</span>
@@ -182,12 +216,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Application"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Add Application")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Application");
+                  }}
                 >
                   <LayoutGrid className="h-5 w-5" />
                   <span className="sr-only">Add Application</span>
@@ -202,12 +240,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Add Timeline"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Add Timeline")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Timeline");
+                  }}
                 >
                   <History className="h-5 w-5" />
                   <span className="sr-only">Add Timeline</span>
@@ -222,12 +264,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Messages"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Messages")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Messages");
+                  }}
                 >
                   <MessagesSquare className="h-5 w-5" />
                   <span className="sr-only">Messages</span>
@@ -242,12 +288,16 @@ function HomePage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
+                  to="#"
                   className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                     active === "Account"
                       ? "text-accent-foreground bg-accent"
                       : "text-muted-foreground"
                   }  transition-colors hover:text-foreground`}
-                  onClick={() => setActive("Account")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Account");
+                  }}
                 >
                   <SquareUser className="h-5 w-5" />
                   <span className="sr-only">Account</span>
@@ -300,7 +350,6 @@ function HomePage() {
             side="left"
             className="w-[80%] max-w-[280px] bg-background border-r"
             overlayClassName="bg-black/50"
-            // Force opaque background with !important to override any transparency
             style={{
               backgroundColor: "var(--background)",
               opacity: "1 !important",
@@ -323,80 +372,106 @@ function HomePage() {
 
               <nav className="grid gap-2 text-sm font-medium">
                 <Link
-                  to="/"
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Dashboard"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Dashboard")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Dashboard");
+                  }}
                 >
                   <Home className="h-5 w-5" />
                   Dashboard
                 </Link>
                 <Link
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Project"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Add Project")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Project");
+                  }}
                 >
                   <FolderGit className="h-5 w-5" />
                   Add Project
                 </Link>
                 <Link
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Skills"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Add Skills")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Skills");
+                  }}
                 >
                   <PencilRuler className="h-5 w-5" />
                   Skills
                 </Link>
                 <Link
-                  to="/add-application"
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Application"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Add Application")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Application");
+                  }}
                 >
                   <LayoutGrid className="h-5 w-5" />
                   Add Application
                 </Link>
                 <Link
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Add Timeline"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Add Timeline")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Add Timeline");
+                  }}
                 >
                   <History className="h-5 w-5" />
                   Add Timeline
                 </Link>
                 <Link
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Messages"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Messages")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Messages");
+                  }}
                 >
                   <MessagesSquare className="h-5 w-5" />
                   Messages
                 </Link>
                 <Link
+                  to="#"
                   className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
                     active === "Account"
                       ? "bg-accent text-accent-foreground font-semibold"
                       : "hover:bg-accent/50"
                   }`}
-                  onClick={() => setActive("Account")}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setActive("Account");
+                  }}
                 >
                   <SquareUser className="h-5 w-5" />
                   Account
@@ -437,60 +512,10 @@ function HomePage() {
           </h1>
         </div>
       </header>
-      {(() => {
-        switch (active) {
-          case "Dashboard":
-            return <Dashboard />;
-            break;
-          case "Add Project":
-            return <AddProject />;
-            break;
-          case "Add Skills":
-            return <AddSkills />;
-            break;
-          case "Add Application":
-            return <AddApplication />;
-            break;
-          case "Add Timeline":
-            return <AddTimeline />;
-            break;
-          case "Messages":
-            return <Messages />;
-            break;
-          case "Account":
-            return <Account />;
-            break;
-          default:
-            return <Dashboard />;
-            break;
-        }
-      })()}
 
-      {/* Main Content Area */}
+      {/* Main Content Area - Renders only the active component */}
       <main className="flex-1 p-4 md:p-6 md:ml-14">
-        {/* Dashboard content */}
-        <div className="bg-card rounded-lg shadow p-4 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Dashboard Overview</h2>
-          <p className="text-muted-foreground">
-            Your Portfolio Management Dashboard
-          </p>
-        </div>
-
-        {/* Example content cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-card rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Projects</h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
-          <div className="bg-card rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Skills</h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
-          <div className="bg-card rounded-lg shadow p-4">
-            <h3 className="font-medium mb-2">Messages</h3>
-            <p className="text-2xl font-bold">0</p>
-          </div>
-        </div>
+        {renderActiveComponent()}
       </main>
     </div>
   );
