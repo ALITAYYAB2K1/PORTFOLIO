@@ -5,7 +5,7 @@ import Footer from "./pages/Footer";
 import Home from "./pages/Home";
 import ProjectView from "./pages/ProjectView";
 import { ModeToggle } from "./components/mode-toggle";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
