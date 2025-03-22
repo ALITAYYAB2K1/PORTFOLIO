@@ -31,7 +31,7 @@ import {
   SheetTitle,
   SheetHeader,
 } from "../components/ui/sheet";
-import { Dashboard } from "./sub-components/Dashboard";
+import Dashboard from "./sub-components/Dashboard";
 import { AddProject } from "./sub-components/AddProject";
 import { AddSkills } from "./sub-components/AddSkills";
 import { AddSoftwareApplications } from "./sub-components/AddApplication";
