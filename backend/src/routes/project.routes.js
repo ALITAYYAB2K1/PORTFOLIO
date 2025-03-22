@@ -18,7 +18,7 @@ router
     upload.fields([{ name: "image", maxCount: 1 }]),
     addNewProject
   );
-router.route("/getall").get(verifyJWT, getAllProject);
+router.route("/getall").get(getAllProject);
 router.route("/delete/:id").delete(verifyJWT, deleteProject);
 router
   .route("/update/:id")
@@ -27,6 +27,6 @@ router
     upload.fields([{ name: "image", maxCount: 1 }]),
     updateProject
   );
-router.route("/get/:id").get(verifyJWT, getProject);
+router.route("/get/:id").get(getProject);
 
 export default router;
