@@ -13,7 +13,7 @@ const router = Router();
 router
   .route("/add")
   .post(verifyJWT, upload.fields([{ name: "svg", maxCount: 1 }]), addNewSkill);
-router.route("/getall").get(verifyJWT, getAllSkill);
+router.route("/getall").get(getAllSkill);
 router.route("/delete/:id").delete(verifyJWT, deleteSkill);
 router.route("/update/:id").put(verifyJWT, updateSkill);
 
