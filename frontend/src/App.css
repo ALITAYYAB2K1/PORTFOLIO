@@ -122,10 +122,11 @@
     @apply bg-background text-foreground;
   }
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap");
+
+.dancing_text {
+  font-family: "Dancing Script", cursive;
 }
 ::-webkit-scrollbar {
   width: 15px;
@@ -137,17 +138,43 @@
   background: linear-gradient(#642bff, #ff22e6);
   border-radius: 7px;
 }
-.avatar-update-btn::file-selector-button {
-  width: 100%;
-  padding: 7px;
-  font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid hsl(222.2 47.4% 11.2%);
-  background: hsl(222.2 47.4% 11.2%);
-  cursor: pointer;
+.text-tubeLight-effect {
+  display: flex;
   color: #fff;
+  position: relative;
+  text-transform: uppercase;
+  width: 100%;
+  outline: none;
+  overflow-y: hidden;
+  /* -webkit-box-reflect: below -27px linear-gradient(transparent, #ffffff40); */
+  animation: animate 5s linear infinite;
 }
-.avatar-update-btn::file-selector-button:hover {
-  background: transparent;
-  color: hsl(222.2 47.4% 11.2%);
+@keyframes animate {
+  0%,
+  18%,
+  20%,
+  50.1%,
+  60%,
+  65.1%,
+  80%,
+  90.1%,
+  92% {
+    color: gray;
+    text-shadow: none;
+  }
+  18.1%,
+  20.1%,
+  30%,
+  50%,
+  60.1%,
+  65%,
+  80.1%,
+  90.1%,
+  92.1%,
+  100% {
+    color: #fff;
+    text-shadow: 0 0 1px rgb(150, 150, 150), 0 0 2px rgb(150, 150, 150),
+      0 0 2px rgb(150, 150, 150), 0 0 5px rgb(150, 150, 150),
+      0 0 20px rgb(150, 150, 150);
+  }
 }
