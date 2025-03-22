@@ -1,14 +1,12 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
   return (
-    <>
-      <h1 className="text-center text-size-100px">Hello world</h1>
-    </>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      {children}
+    </ThemeProvider>
   );
 }
 
