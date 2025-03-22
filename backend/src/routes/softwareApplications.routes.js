@@ -16,7 +16,7 @@ router
     upload.fields([{ name: "svg", maxCount: 1 }]),
     addNewApplication
   );
-router.route("/getall").get(verifyJWT, getAllApplication);
+router.route("/getall").get(getAllApplication);
 router.route("/delete/:id").delete(verifyJWT, deleteApplication);
 
 export default router;
